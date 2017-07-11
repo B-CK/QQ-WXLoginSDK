@@ -78,18 +78,9 @@ public class WXApi {
         WXEntryActivity.loginWeixin(MainActivity.mInstance, MainActivity.mWXapi, new WXEntryActivity.WeChatCode() {
             @Override
             public void getResponse(String code) {
-                String accessToken = (String) ShareUtils.getValue(MainActivity.mInstance, WEIXIN_ACCESS_TOKEN_KEY, "none");
-                String openid = (String) ShareUtils.getValue(MainActivity.mInstance, WEIXIN_OPENID_KEY, "none");
-                String refreshToken = (String) ShareUtils.getValue(MainActivity.mInstance, WEIXIN_REFRESH_TOKEN_KEY, "none");
-                if (!"none".equals(accessToken)) {
-                    // 有access_token，判断是否过期
-                    isExpireAccessToken(accessToken, openid, refreshToken);
-                } else {
-                    MainActivity.mInstance.ShowToast("本地没有access_token ");
-                    // 无access_token
-                    getAccessToken(code);
-                }
-                MainActivity.mInstance.finish();
+                // 无access_token
+                getAccessToken(code);
+                WXEntryActivity.mInstance.finish();
             }
         });
     }
@@ -129,7 +120,6 @@ public class WXApi {
             MainActivity.mInstance.ShowToast("第二步：获取access_token 成功");
             WXAccessTokenInfo tokenInfo = mGson.fromJson(response, WXAccessTokenInfo.class);
             //存储数据access_token,openid,refresh_token
-            saveAccessInfotoLocation(tokenInfo);
             //验证AccessToken是否过期
             isExpireAccessToken(tokenInfo.getAccess_token(), tokenInfo.getOpenid(), tokenInfo.getRefresh_token());
         } else {
@@ -220,12 +210,6 @@ public class WXApi {
                 UnityPlayer.UnitySendMessage(AppConst.gameObject, AppConst.loginCallBack, userInfo.getOpenid());
             }
         });
-    }
-
-    private void saveAccessInfotoLocation(WXAccessTokenInfo tokenInfo) {
-        ShareUtils.saveValue(MainActivity.mInstance, WEIXIN_OPENID_KEY, tokenInfo.getOpenid());
-        ShareUtils.saveValue(MainActivity.mInstance, WEIXIN_ACCESS_TOKEN_KEY, tokenInfo.getAccess_token());
-        ShareUtils.saveValue(MainActivity.mInstance, WEIXIN_REFRESH_TOKEN_KEY, tokenInfo.getRefresh_token());
     }
 
 }
