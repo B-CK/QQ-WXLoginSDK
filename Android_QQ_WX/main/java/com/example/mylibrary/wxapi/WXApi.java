@@ -9,7 +9,6 @@ import com.google.gson.Gson;
 import com.unity3d.player.UnityPlayer;
 import com.example.mylibrary.AppConst;
 import com.example.mylibrary.MainActivity;
-import com.example.mylibrary.ShareUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -119,8 +118,7 @@ public class WXApi {
         if (validateSuccess(response)) {
             MainActivity.mInstance.ShowToast("第二步：获取access_token 成功");
             WXAccessTokenInfo tokenInfo = mGson.fromJson(response, WXAccessTokenInfo.class);
-            //存储数据access_token,openid,refresh_token
-            //验证AccessToken是否过期
+    
             isExpireAccessToken(tokenInfo.getAccess_token(), tokenInfo.getOpenid(), tokenInfo.getRefresh_token());
         } else {
             MainActivity.mInstance.ShowToast("返回数据错误 : " + response);
